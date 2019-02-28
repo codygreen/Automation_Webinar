@@ -1,0 +1,15 @@
+app_name: App1
+tenant: Tenant1
+app_template: http
+server_port: 80
+snat: self
+persistance: cookie
+app_locations:
+  - datacenter_name: aws
+    vip_address: 10.1.1.14
+    pool_members:
+      - 10.1.1.229
+      - 10.1.1.149
+      - 10.1.1.150
+    pool_monitor: http
+    pool_servicePort: 80

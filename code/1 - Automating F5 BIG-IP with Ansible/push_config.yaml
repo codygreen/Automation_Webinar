@@ -1,0 +1,52 @@
+---
+- name: Update Tenant
+  hosts: localhost
+  gather_facts: false
+  connection: local
+
+  tasks:
+  - name: Create tmp Directory for Declarations
+    file:
+      path: tmp/
+      state: directory
+
+
+  - name: Group all Application Files
+    assemble:
+      remote_src: False
+      src: "apps/{{item[0]}}/{{item[1]}}/"
+      dest: tmp/{{item[0]}}-{{item[1]}}_combined.yaml
+      delimiter: ","
+    with_nested:
+      - "{{datacenters}}"
+      - "{{tenants}}"
+
+  - name: Retrive AS3 JSON Body
+    set_fact: tenant_body="{{ lookup('file', 'tmp/{{item[0]}}-{{item[1]}}_combined.yaml', split_lines=False) }}"
+    with_nested:
+      - "{{datacenters}}"
+      - "{{tenants}}"
+    register: tenant_json
+
+  - name: Retrive AS3 files to push
+    command: "ls tmp/"
+    register: dir_out
+
+  - name: URI POST Tenant
+    uri:
+      url: "https://{{ groups[item.split('-')[0]][0] }}:{{hostvars[groups[item.split('-')[0]][0]]['f5_admin_port']}}/mgmt/shared/appsvcs/declare"
+      method: POST
+      user: "admin"
+      password: "{{ f5_password }}"
+      validate_certs: no
+      body: "{{ lookup('template', 'templates/tenant_base.j2') }}"
+      body_format: json
+    with_items:
+      - "{{dir_out.stdout_lines}}"
+  
+  - name: Remove Temporary Combined File
+    file:
+      path: tmp/{{item}}
+      state: absent
+    with_items:
+      - "{{dir_out.stdout_lines}}"

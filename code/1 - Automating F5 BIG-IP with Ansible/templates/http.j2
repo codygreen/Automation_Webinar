@@ -1,0 +1,25 @@
+"{{app_name}}": {
+    "class": "Application",
+    "template": "http",
+    "serviceMain": {
+        "class": "Service_HTTP",
+        "virtualAddresses": [
+            "{{item.vip_address}}"
+        ],
+        "pool": "{{app_name}}_pool"
+    },
+    "{{app_name}}_pool": {
+        "class": "Pool",
+        "monitors": [
+            "http"
+        ],
+        "members": [
+            {
+                "servicePort": {{server_port}},
+                "serverAddresses": [
+                    "{{ item.pool_members| join('", "') }}"
+                ]
+            }
+        ]
+    }
+}

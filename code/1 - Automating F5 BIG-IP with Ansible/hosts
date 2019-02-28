@@ -1,0 +1,4 @@
+localhost ansible_connection=local ansible_python_interpreter=/Users/cgreen/Documents/GitHub/Automation_Webinar/myansible/bin/python
+
+[aws]
+3.18.69.19 f5_admin_port=8443

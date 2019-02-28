@@ -1,0 +1,82 @@
+--- # Deploy a BIG-IP in AWS
+
+- name: Deploy BIG-IP
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+  # Get My IP Address
+  - name: Get public IP address
+    uri: 
+      url: "http://checkip.amazonaws.com"
+      return_content: yes
+    register: myip
+
+  # Deploy BIG-IP in AWS
+  - name: Deploy a BIG-IP in AWS via CFT
+    register: deploy_output
+    cloudformation:
+      stack_name: "{{ stack_name }}"
+      state: present
+      region: "{{ region }}"
+      template_url: "{{ template_url }}"
+      template_parameters:
+        Vpc: "{{ vpc }}"
+        subnet1Az1: "{{ subnet1Az1 }}"
+        imageName: "{{ imageName }}"
+        instanceType: "{{ instanceType }}"
+        sshKey: "{{ sshKey }}"
+        restrictedSrcAddress: "{{ myip.content | replace('\n', '') }}/32"
+        restrictedSrcAddressApp: "{{ myip.content | replace('\n', '') }}/32"
+
+  # Wait for BIG-IP to be ready
+  - name: Wait for BIG-IP to be ready
+    wait_for:
+      host: "{{ deploy_output.stack_outputs.Bigip1subnet1Az1SelfEipAddress }}"
+      port: "{{ deploy_output.stack_outputs.Bigip1Url | urlsplit('port')}}"
+      state: present
+
+  # Change the BIG-IP admin password
+  - name: Change BIG-IP admin password
+    bigip_command:
+      provider:
+        server: "{{ deploy_output.stack_outputs.Bigip1subnet1Az1SelfEipAddress }}"
+        ssh_keyfile: "{{ ssh_keyfile }}"
+        transport: cli
+        user: "{{ f5_user }}"
+      commands: modify auth user {{ f5_user }} password {{ f5_password }}
+
+  # Install Declarative Onboarding RPM
+  # NOTE: rpm binary must be located on host running playbook
+  - name: Retrieve DO Install Version
+    find:
+      paths: "{{ playbook_dir }}/files"
+      patterns: "f5-decl*.rpm"
+    register: dorpm
+
+  - name: Install DO
+    bigip_iapplx_package:
+      package: "{{ dorpm.files[0].path }}"
+      provider:
+        server: "{{ deploy_output.stack_outputs.Bigip1subnet1Az1SelfEipAddress }}"
+        server_port: "{{ deploy_output.stack_outputs.Bigip1Url | urlsplit('port')}}"
+        transport: rest
+        user: "{{ f5_user }}"
+        password: "{{ f5_password }}"
+        validate_certs: no
+  
+  # Push Declarative Onboarding declaration to BIG-IP
+  - name: Push DO declaration to BIG-IP
+    uri:
+      url: "{{ deploy_output.stack_outputs.Bigip1Url }}/mgmt/shared/declarative-onboarding"
+      method: POST
+      user: "{{ f5_user }}"
+      password: "{{ f5_password }}"
+      body: "{{ lookup('file', 'files/single_nic_do.json') }}"
+      status_code: 202
+      timeout: 300
+      body_format: json
+      validate_certs: no
+
+  - debug:
+      var: deploy_output.stack_outputs

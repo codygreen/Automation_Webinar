@@ -1,0 +1,14 @@
+# app portion of AS3 declarations - they should be built based upon your app-inputs
+code/*/apps/*
+# where you should store your AS3 and DO rpms
+code/*/files/*
+# password file for ansible vault
+code/*/group_vars/vault*
+# you should download roles from Ansible Galaxy 
+code/*/roles/f5devcentral*
+# where the AS3 declaration is built before deployment
+code/*/tmp/*
+# Python virtual environment 
+myansible*
+# don't upload any certificates
+*.pem

@@ -1,0 +1,12 @@
+--- # Delete a BIG-IP in AWS
+
+- name: Delete BIG-IP
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+
+  - name: delete a BIG-IP in AWS via CFT
+    cloudformation:
+      stack_name: "{{ stack_name }}"
+      state: absent

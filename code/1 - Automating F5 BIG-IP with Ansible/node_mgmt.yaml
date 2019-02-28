@@ -1,0 +1,40 @@
+--- # Manage a BIG-IP node
+
+- name: Manage a BIG-IP node
+  hosts: aws
+  gather_facts: false
+
+  vars:
+    # node IP addresses list
+    nodes: [10.1.1.100, 10.1.1.101]
+    # state most be enabled or disabled (default is disabled)
+    state: "disabled"
+    # variables required by F5 module
+    provider:
+          user: "{{ f5_user }}"
+          server: "{{ vars.inventory_hostname }}"
+          server_port: "{{ vars.f5_admin_port }}"
+          password: "{{ f5_password }}"
+          transport: "rest"
+          validate_certs: no
+
+  tasks:
+    - name: Get nodes
+      register: nodes_output
+      bigip_device_facts:
+        gather_subset: 
+          - nodes
+        provider: "{{ provider }}"
+      delegate_to: localhost
+
+    - name: Enable/Disable a node
+      bigip_node:
+        state: "{{ state }}"
+        partition: Common
+        name: "{{ item.name }}"
+        address: "{{ item.address }}"
+        provider: "{{ provider }}"
+      loop: "{{ query('items', '{{ nodes_output.nodes }}') }}"
+      when: item.address in nodes
+      delegate_to: localhost
+  
