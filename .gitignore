@@ -12,3 +12,7 @@ code/*/tmp/*
 myansible*
 # don't upload any certificates
 *.pem
+code/2 - IaC with Terraform/big-ip/.terraform
+code/2 - IaC with Terraform/compute/.terraform
+code/2 - IaC with Terraform/iam/.terraform
+code/2 - IaC with Terraform/networking/.terraform
