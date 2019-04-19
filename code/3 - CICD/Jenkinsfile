@@ -11,9 +11,7 @@ pipeline {
         }
         stage('Build Web App') { 
             steps {
-                sh 'cd Automation_Webinar/code/3*'
-                sh 'terraform init'
-                sh 'terraform apply --auto-approve'
+                sh 'cd Automation_Webinar/code/3* && terraform get --update && terraform init && terraform apply --auto-approve'
             }
         }
     }
