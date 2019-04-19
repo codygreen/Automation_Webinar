@@ -5,7 +5,7 @@ variable "aws_region" {
 }
 
 variable "name" {
-  default = "cicd_demo"
+  default = "cicd_demo_compute"
 }
 
 variable "vpc_cidr" {
