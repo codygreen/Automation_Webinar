@@ -6,12 +6,18 @@ pipeline {
     stages {
         stage('Clone Repository') { 
             steps {
+                sh ' rm -rf ./*'
                 sh 'git clone https://github.com/codygreen/Automation_Webinar.git'
             }
         }
         stage('Build Web App') { 
             steps {
                 sh 'cd Automation_Webinar/code/3* && terraform get --update && terraform init && terraform apply --auto-approve'
+            }
+        }
+        state('Configure Web App') {
+            steps {
+                sh 'ansible-playbook -i ./inventory ./demo_app.yaml'
             }
         }
     }

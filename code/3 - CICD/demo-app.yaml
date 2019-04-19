@@ -1,0 +1,20 @@
+---
+- hosts: http
+  become: true
+  gather_facts: False
+  pre_tasks:
+  - name: Install python2 for Ansible
+    raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qqy python-minimal)"
+    register: output
+    changed_when: output.stdout != ""
+  - name: Gathering Facts
+    setup:
+  roles:
+    - role: nginxinc.nginx
+  post_tasks:
+    - name: download NGINX demo app
+      command: sudo curl https://raw.githubusercontent.com/nginxinc/NGINX-Demos/master/nginx-hello/index.html -o /usr/share/nginx/html/index.html
+    - name: download NGINX demo config
+      command: sudo curl https://raw.githubusercontent.com/nginxinc/NGINX-Demos/master/nginx-hello/hello.conf -o /etc/nginx/conf.d/default.conf
+    - name: restart NGINX
+      command: sudo systemctl restart nginx
