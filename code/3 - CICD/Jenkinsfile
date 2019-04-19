@@ -4,8 +4,14 @@ pipeline {
         PATH = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/aws/bin"
     }
     stages {
-        stage('Test') { 
+        stage('Clone Repository') { 
             steps {
+                sh 'git clone https://github.com/codygreen/Automation_Webinar.git'
+            }
+        }
+        stage('Build Web App') { 
+            steps {
+                sh 'cd Automation_Webinar/code/3\ -\ CICD/'
                 sh 'terraform init'
                 sh 'terraform apply --auto-approve'
             }
