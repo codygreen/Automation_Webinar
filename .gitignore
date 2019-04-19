@@ -16,3 +16,6 @@ code/2 - IaC with Terraform/big-ip/.terraform
 code/2 - IaC with Terraform/compute/.terraform
 code/2 - IaC with Terraform/iam/.terraform
 code/2 - IaC with Terraform/networking/.terraform
+code/3 - CICD/setup/.terraform/*
+code/3 - CICD/setup/terraform.tfstate
+code/3 - CICD/setup/terraform.tfstate.backup
