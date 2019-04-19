@@ -6,7 +6,8 @@ pipeline {
     stages {
         stage('Test') { 
             steps {
-                sh 'terraform --version'
+                sh 'terraform init'
+                sh 'terraform apply --auto-approve'
             }
         }
     }
