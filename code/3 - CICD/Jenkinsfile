@@ -2,7 +2,7 @@ pipeline {
     agent any 
     environment {
         PATH = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/aws/bin"
-        NAME = "${params.APP_NAME ? 'params.APP_NAME' : 'cicd_demo'}"
+        NAME = "${params.APP_NAME ? 'params.APP_NAME' : 'cicd_demo_test'}"
         GIT_REPO_URL = "${params.GIT_REPO_URL ? 'params.GIT_REPO_URL' : 'https://github.com/codygreen/cicd_demo_app.git'}"
     }
     stages {
@@ -17,9 +17,9 @@ pipeline {
                 dir("Automation_Webinar/code/3*") {
                     sh 'export TF_VAR_name=${NAME}'
                     echo NAME
-                    /*sh 'terraform get --update'
+                    sh 'terraform get --update'
                     sh 'terraform init' 
-                    sh 'terraform apply --auto-approve'*/
+                    sh 'terraform apply --auto-approve'
                 }
             }
         }
