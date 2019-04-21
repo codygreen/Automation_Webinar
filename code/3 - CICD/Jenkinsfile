@@ -2,7 +2,7 @@ pipeline {
     agent any 
     environment {
         PATH = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/aws/bin"
-        NAME = "cicd_demo"
+        NAME = "${params.APP_NAME ? 'params.APP_NAME' : 'cicd_demo'}"
         GIT_REPO_URL = ""
     }
     stages {
@@ -15,10 +15,8 @@ pipeline {
         stage('Build Web App') { 
             steps {
                 dir("Automation_Webinar/code/3*") {
-                    withEnv(['NAME=${params.APP_NAME}']) {
-                        sh 'export TF_VAR_name=${NAME}'
-                        echo NAME
-                    }
+                    sh 'export TF_VAR_name=${NAME}'
+                    echo NAME
                     /*sh 'terraform get --update'
                     sh 'terraform init' 
                     sh 'terraform apply --auto-approve'*/
@@ -27,10 +25,9 @@ pipeline {
         }
         stage('Configure Web App') {
             steps {
-                withEnv(['NAME=${params.APP_NAME}', 'GIT_REPO_URL=${params.GIT_REPO_URL}']) {
-                    echo NAME
-                    echo GIT_REPO_URL
-                }
+                echo NAME
+                echo GIT_REPO_URL
+                
                 /*dir("Automation_Webinar/code/3*") {
                     sh 'ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ./inventory ./demo-app.yaml'
                 }*/
