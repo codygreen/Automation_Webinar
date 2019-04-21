@@ -3,6 +3,7 @@ pipeline {
     environment {
         PATH = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/aws/bin"
         NAME = "cicd_demo"
+        GIT_REPO_URL = ""
     }
     stages {
         stage('Clone Repository') { 
@@ -25,8 +26,10 @@ pipeline {
         }
         stage('Configure Web App') {
             steps {
-                echo params.APP_NAME
-                echo parama.GIT_REPO_URL
+                withEnv(['NAME=${params.APP_NAME}', 'GIT_REPO_URL=${params.GIT_REPO_URL}']) {
+                    echo NAME
+                    echo GIT_REPO_URL
+                }
                 /*dir("Automation_Webinar/code/3*") {
                     sh 'ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ./inventory ./demo-app.yaml'
                 }*/
