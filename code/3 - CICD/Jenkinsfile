@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Build Web App') { 
             steps {
-                dir("Automation_Webinar/code/3*") {
+                dir("Automation_Webinar/code/3 - CICD") {
                     sh 'export TF_VAR_name=${NAME}'
                     echo NAME
                     sh 'terraform get --update'
