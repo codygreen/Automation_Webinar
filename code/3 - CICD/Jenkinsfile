@@ -11,19 +11,23 @@ pipeline {
             }
         }
         stage('Build Web App') { 
-            dir("Automation_Webinar/code/3*") {
+            steps {
+                dir("Automation_Webinar/code/3*") {
                 sh 'export TF_VAR_name=${params.APP_NAME}'
                 /*sh 'terraform get --update'
                 sh 'terraform init' 
                 sh 'terraform apply --auto-approve'*/
             }
+            }
         }
         stage('Configure Web App') {
-            echo params.APP_NAME
-            echo parama.GIT_REPO_URL
-            /*dir("Automation_Webinar/code/3*") {
-                sh 'ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ./inventory ./demo-app.yaml'
-            }*/
+            steps {
+                echo params.APP_NAME
+                echo parama.GIT_REPO_URL
+                /*dir("Automation_Webinar/code/3*") {
+                    sh 'ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ./inventory ./demo-app.yaml'
+                }*/
+            }
         }
     }
 }
