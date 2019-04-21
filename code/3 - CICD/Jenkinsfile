@@ -17,6 +17,7 @@ pipeline {
                 dir("Automation_Webinar/code/3*") {
                     withEnv(['NAME=${params.APP_NAME}']) {
                         sh 'export TF_VAR_name=${NAME}'
+                        echo NAME
                     }
                     /*sh 'terraform get --update'
                     sh 'terraform init' 
