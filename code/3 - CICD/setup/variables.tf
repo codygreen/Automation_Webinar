@@ -21,3 +21,8 @@ variable "public_cidrs" {
 variable "ssh_key" {
   default = "cody-key"
 }
+
+variable "GitHubIPs" {
+  default = ["192.30.252.0/22", "185.199.108.0/22", "140.82.112.0/20"]
+  type    = "list"
+}

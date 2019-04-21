@@ -102,7 +102,7 @@ resource "aws_security_group" "cicd_sg" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["${chomp(data.http.myIP.body)}/32"]
+    cidr_blocks = ["${chomp(data.http.myIP.body)}/32", "${var.GitHubIPs}"]
   }
 
   # HTTPS
@@ -198,6 +198,12 @@ resource "null_resource" "jenkins" {
       "sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins.io/redhat/jenkins.repo",
       "sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key",
       "sudo yum install jenkins -y",
+      "sudo mkdir /var/lib/jenkins/init.groovy.d",
+      "sudo cp basic-security.groovy /var/lib/jenkins/init.groovy.d/",
+      "sudo chown -R jenkins:jenkins /var/lib/jenkins/init.groovy.d",
+      "curl https://raw.githubusercontent.com/jenkinsci/docker/master/jenkins-support -o jenkins-support",
+      "curl https://raw.githubusercontent.com/jenkinsci/docker/master/install-plugins.sh -o install-plugins.sh",
+      "sudo cp jenkins-support install-plugins.sh /usr/local/bin/",
       "sudo service jenkins start",
       "sudo yum install -y git",
       "sudo pip install ansible",
@@ -205,6 +211,8 @@ resource "null_resource" "jenkins" {
       "unzip terraform*",
       "sudo mv terraform /usr/local/bin/",
       "sudo chsh -s /bin/bash jenkins",
+      "sudo /usr/local/bin/ansible-galaxy install --roles-path /etc/ansible/roles nginxinc.nginx",
+      "sudo sh -c 'echo \"JAVA_ARGS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false\" >> /etc/sysconfig/jenkins'",
     ]
   }
 }
