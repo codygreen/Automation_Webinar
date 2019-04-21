@@ -11,6 +11,45 @@ data "http" "myIP" {
   url = "http://api.ipify.org/"
 }
 
+# create IAM user
+resource "aws_iam_user" "automation_lab" {
+  name          = "${var.name}-jenkins"
+  path          = "/lab/"
+  force_destroy = true
+}
+
+# add users to group
+resource "aws_iam_group_membership" "automation_lab" {
+  name  = "automation_lab_group_membership"
+  group = "${aws_iam_group.automation_lab.name}"
+  users = ["${aws_iam_user.automation_lab.*.name}"]
+}
+
+# create IAM group
+resource "aws_iam_group" "automation_lab" {
+  name = "${var.name}-jenkins"
+}
+
+# data "aws_iam_policy" "AWSCloud9User" {
+#   arn = "arn:aws:iam::aws:policy/Administrator"
+# }
+
+data "aws_iam_policy" "admin" {
+  arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
+# attach policy to IAM group
+resource "aws_iam_group_policy_attachment" "automation_lab_attach" {
+  group      = "${aws_iam_group.automation_lab.name}"
+  policy_arn = "${data.aws_iam_policy.admin.arn}"
+}
+
+# create access key
+resource "aws_iam_access_key" "cicd" {
+  count = "${aws_iam_user.automation_lab.count}"
+  user  = "${aws_iam_user.automation_lab.*.name[count.index]}"
+}
+
 # create required VPC
 resource "aws_vpc" "vpc" {
   cidr_block           = "${var.vpc_cidr}"
@@ -177,6 +216,35 @@ resource "aws_instance" "cicd" {
     Terraform = true
     Name      = "CICD"
   }
+}
+
+resource "null_resource" "aws_credentials" {
+  provisioner "remote-exec" {
+    connection {
+      host        = "${aws_instance.cicd.public_ip}"
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = "${file("~/.ssh/${var.ssh_key}.pem")}"
+    }
+
+    inline = [<<EOF
+      sudo runuser -l jenkins -c 'mkdir ~/.aws'
+      sudo runuser -l jenkins -c "echo -e '[default]\nregion=${var.aws_region}\naws_access_key_id=${aws_iam_access_key.cicd.id}\naws_secret_access_key=${aws_iam_access_key.cicd.secret}' > ~/.aws/credentials"
+      EOF
+    ]
+  }
+
+  # provisioner "file" {
+  #   connection {
+  #     host        = "${aws_instance.cicd.public_ip}"
+  #     type        = "ssh"
+  #     user        = "ec2-user"
+  #     private_key = "${file("~/.ssh/${var.ssh_key}.pem")}"
+  #   }
+
+  #   content     = "aws_access_key_id = ${aws_iam_access_key.cicd.id}\naws_secret_access_key = ${aws_iam_access_key.cicd.secret}"
+  #   destination = "/var/lib/jenkins/.aws/credentials"
+  # }
 }
 
 # run ansible playbook
