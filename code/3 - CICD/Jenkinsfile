@@ -26,7 +26,7 @@ pipeline {
         stage('Configure Web App') {
             steps {
                 echo NAME
-                echo GIT_REPO_URL
+                //echo GIT_REPO_URL
                 
                 /*dir("Automation_Webinar/code/3*") {
                     sh 'ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ./inventory ./demo-app.yaml'
