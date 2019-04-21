@@ -1,6 +1,6 @@
 pipelineJob('DSL_Pipeline') {
 
-  def repo = 'https://github.com/codygreen/cicd_demo_app.git'
+  def repo = 'https://github.com/codygreen/Automation_Webinar.git'
 
   triggers {
     scm('H/5 * * * *')
