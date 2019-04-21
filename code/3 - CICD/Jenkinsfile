@@ -2,6 +2,7 @@ pipeline {
     agent any 
     environment {
         PATH = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/aws/bin"
+        NAME = "cicd_demo"
     }
     stages {
         stage('Clone Repository') { 
@@ -13,11 +14,13 @@ pipeline {
         stage('Build Web App') { 
             steps {
                 dir("Automation_Webinar/code/3*") {
-                sh 'export TF_VAR_name=${params.APP_NAME}'
-                /*sh 'terraform get --update'
-                sh 'terraform init' 
-                sh 'terraform apply --auto-approve'*/
-            }
+                    withEnv(['NAME=params.APP_NAME']) {
+                        sh 'export TF_VAR_name=${NAME}'
+                    }
+                    /*sh 'terraform get --update'
+                    sh 'terraform init' 
+                    sh 'terraform apply --auto-approve'*/
+                }
             }
         }
         stage('Configure Web App') {
