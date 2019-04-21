@@ -3,7 +3,7 @@ pipeline {
     environment {
         PATH = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/aws/bin"
         NAME = "${params.APP_NAME ? 'params.APP_NAME' : 'cicd_demo'}"
-        GIT_REPO_URL = {params.GIT_REPO_URL ? 'params.GIT_REPO_URL' : ''}"
+        GIT_REPO_URL = "${params.GIT_REPO_URL ? 'params.GIT_REPO_URL' : ''}"
     }
     stages {
         stage('Clone Repository') { 
