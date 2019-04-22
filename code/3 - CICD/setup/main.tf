@@ -233,18 +233,6 @@ resource "null_resource" "aws_credentials" {
       EOF
     ]
   }
-
-  # provisioner "file" {
-  #   connection {
-  #     host        = "${aws_instance.cicd.public_ip}"
-  #     type        = "ssh"
-  #     user        = "ec2-user"
-  #     private_key = "${file("~/.ssh/${var.ssh_key}.pem")}"
-  #   }
-
-  #   content     = "aws_access_key_id = ${aws_iam_access_key.cicd.id}\naws_secret_access_key = ${aws_iam_access_key.cicd.secret}"
-  #   destination = "/var/lib/jenkins/.aws/credentials"
-  # }
 }
 
 # run ansible playbook

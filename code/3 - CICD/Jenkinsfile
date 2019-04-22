@@ -27,10 +27,10 @@ pipeline {
             steps {
                 echo NAME               
                 echo GIT_REPO_URL
-                
-                /*dir("Automation_Webinar/code/3*") {
-                    sh 'ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ./inventory ./demo-app.yaml'
-                }*/
+                //TODO check out repo on remote box and configure NGINX
+                dir("Automation_Webinar/code/3*") {
+                    sh 'ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ./inventory ./demo-app.yaml --extra-vars "NAME=${NAME} GIT_REPO_URL=${GIT_REPO_URL}"'
+                }
             }
         }
     }

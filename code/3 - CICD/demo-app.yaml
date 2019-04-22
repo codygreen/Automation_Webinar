@@ -12,9 +12,22 @@
   roles:
     - role: nginxinc.nginx
   post_tasks:
-    - name: download NGINX demo app
-      command: sudo curl https://raw.githubusercontent.com/nginxinc/NGINX-Demos/master/nginx-hello/index.html -o /usr/share/nginx/html/index.html
-    - name: download NGINX demo config
-      command: sudo curl https://raw.githubusercontent.com/nginxinc/NGINX-Demos/master/nginx-hello/hello.conf -o /etc/nginx/conf.d/default.conf
+    - name: checkout repo
+      git:
+        repo: "{{ GIT_REPO_URL }}"
+        dest: /srv/checkout
+      register: git_output
+    - name: copy website
+      copy:
+        src: /srv/checkout/html/index.html
+        remote_src: yes
+        dest: /usr/share/nginx/html/index.html
+    - name: copy configs
+      copy:
+        src: /srv/checkout/conf.d/default.conf
+        remote_src: yes
+        dest: /etc/nginx/conf.d/default.conf
     - name: restart NGINX
-      command: sudo systemctl restart nginx
+      service:
+        name: nginx
+        state: restarted
