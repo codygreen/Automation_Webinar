@@ -1,5 +1,5 @@
 ---
-- hosts: http
+- hosts: localhost
   become: true
   gather_facts: False
   tasks:
