@@ -56,16 +56,18 @@ module "big-ip" {
   allowed_mgmt_cidrs = ["${chomp(data.http.myIP.body)}/32"]
 }
 
-# Configure BIG-IP
-provider "bigip" {
-  address  = "${module.big-ip.public_ip}"
-  username = "admin"
-  password = "${module.big-ip.public_ip}"
-}
+# Configure BIG-IP - this is based on test methods that are not upstreamed yet
+# provider "bigip" {
+#   address  = "${module.big-ip.public_ip}"
+#   username = "admin"
+#   password = "${module.big-ip.password}"
+# }
 
-// Label is used to identify which Json payload to use.
-resource "bigip_app_as3" "as3-example1" {
-  label    = "Sample 1"
-  ident    = "sanjoseid"
-  jsonfile = "${file("as3_nginx.json")}"
-}
+
+# // Label is used to identify which Json payload to use.
+# resource "bigip_app_as3" "as3-example1" {
+#   label    = "Sample 1"
+#   ident    = "sanjoseid"
+#   jsonfile = "${file("as3_nginx.json")}"
+# }
+

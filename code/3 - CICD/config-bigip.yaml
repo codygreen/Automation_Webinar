@@ -2,12 +2,11 @@
   # Push Declarative Onboarding declaration to BIG-IP
   - name: Push DO declaration to BIG-IP
     uri:
-      url: "{{ deploy_output.stack_outputs.Bigip1Url }}/mgmt/shared/declarative-onboarding"
+      url: "{{ BIGIP }}/mgmt/shared/appsvcs/declare"
       method: POST
-      user: "{{ f5_user }}"
-      password: "{{ f5_password }}"
-      #body: "{{ playbook_dir }}/files/single_nic_do.json"
-      body: "{{ lookup('file', 'files/single_nic_do.json') }}"
+      user: "admin"
+      password: "{{ BIGIP_PASSWORD }}"
+      body: "{{ lookup('file', 'files/as3_nginx.json') }}"
       status_code: 202
       timeout: 300
       body_format: json
