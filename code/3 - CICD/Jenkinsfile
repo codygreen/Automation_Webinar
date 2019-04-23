@@ -41,7 +41,12 @@ pipeline {
                     sh 'export BIGIP_PASSWORD=`terraform output --module=big-ip password`'
                     echo BIGIP
                     echo BIGIP_PASSWORD
-                    sh 'ansible-playbook -i ./inventory ./config-bigip.yaml --extra-vars "BIGIP=${BIGIP} BIGIP_PASSWORD=${BIGIP_PASSWORD}"'
+                    if(BIGIP && BIGIP_PASSWORD) {
+                        sh 'ansible-playbook -i ./inventory ./config-bigip.yaml --extra-vars "BIGIP=${BIGIP} BIGIP_PASSWORD=${BIGIP_PASSWORD}"'
+                    } else {
+                        error "ERROR: BIGIP and/or BIGIP_PASSWORD variable not set"
+                    }
+                    
                 }
             }
         }
