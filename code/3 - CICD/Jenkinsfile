@@ -37,11 +37,11 @@ pipeline {
         stage('Configure BIG-IP') {
             steps {
                 dir("Automation_Webinar/code/3 - CICD") {
-                    sh 'set BIGIP=`terraform output --module=big-ip public_ip`'
-                    sh 'set BIGIP_PASSWORD=`terraform output --module=big-ip password`'
+                    sh 'export BIGIP=`terraform output --module=big-ip private_ip`'
+                    sh 'export BIGIP_PASSWORD=`terraform output --module=big-ip password`'
                     echo BIGIP
                     echo BIGIP_PASSWORD
-                    sh 'ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ./inventory ./config-bigip.yaml --extra-vars "NAME=${NAME} GIT_REPO_URL=${GIT_REPO_URL} BIGIP=${BIGIP}" BIGIP_PASSWORD=${BIGIP_PASSWORD}'
+                    sh 'ansible-playbook -i ./inventory ./config-bigip.yaml --extra-vars "BIGIP=${BIGIP} BIGIP_PASSWORD=${BIGIP_PASSWORD}""'
                 }
             }
         }

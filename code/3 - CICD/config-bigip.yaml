@@ -1,12 +1,16 @@
-# Install Declarative Onboarding RPM
-  # Push Declarative Onboarding declaration to BIG-IP
-  - name: Push DO declaration to BIG-IP
+---
+- hosts: http
+  become: true
+  gather_facts: False
+  tasks:
+  # Push AS3 declaration to BIG-IP
+  - name: Push AS3 declaration to BIG-IP
     uri:
-      url: "{{ BIGIP }}/mgmt/shared/appsvcs/declare"
+      url: "https://{{ BIGIP }}:8443/mgmt/shared/appsvcs/declare"
       method: POST
       user: "admin"
       password: "{{ BIGIP_PASSWORD }}"
-      body: "{{ lookup('file', 'files/as3_nginx.json') }}"
+      body: "{{ lookup('file', 'as3_nginx.json') }}"
       status_code: 202
       timeout: 300
       body_format: json
