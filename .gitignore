@@ -20,3 +20,4 @@ code/3 - CICD/setup/.terraform/*
 code/3 - CICD/setup/terraform.tfstate
 code/3 - CICD/setup/terraform.tfstate.backup
 code/3 - CICD/.terraform
+inventory
