@@ -37,11 +37,9 @@ pipeline {
         stage('Configure BIG-IP') {
             steps {
                 dir("Automation_Webinar/code/3 - CICD") {
-                    // sh 'export BIGIP=`terraform output --module=big-ip private_ip`'
-                    // sh 'export BIGIP_PASSWORD=`terraform output --module=big-ip password`'
-                    environment {
-                        BIGIP = sh 'terraform output --module=big-ip private_ip'
-                        BIGIP_PASSWORD = sh 'terraform output --module=big-ip password'
+                    script {
+                        sh 'export BIGIP=`terraform output --module=big-ip private_ip`'
+                        sh 'export BIGIP_PASSWORD=`terraform output --module=big-ip password`'
                     }
                     echo BIGIP
                     echo BIGIP_PASSWORD
