@@ -36,17 +36,12 @@ pipeline {
 
         stage('Configure BIG-IP') {
             steps {
+                sh 'export BIGIP=`terraform output --module=big-ip private_ip`'
+                sh 'export BIGIP_PASSWORD=`terraform output --module=big-ip password`'
+                echo BIGIP
+                echo BIGIP_PASSWORD
                 dir("Automation_Webinar/code/3 - CICD") {
-                    sh 'export BIGIP=`terraform output --module=big-ip private_ip`'
-                    sh 'export BIGIP_PASSWORD=`terraform output --module=big-ip password`'
-                    echo BIGIP
-                    echo BIGIP_PASSWORD
-                    if(BIGIP) {
-                        sh 'ansible-playbook -i ./inventory ./config-bigip.yaml --extra-vars "BIGIP=${BIGIP} BIGIP_PASSWORD=${BIGIP_PASSWORD}"'
-                    } else {
-                        error "ERROR: BIGIP variable not set"
-                    }
-                    
+                    sh 'ansible-playbook -i ./inventory ./config-bigip.yaml --extra-vars "BIGIP=${BIGIP} BIGIP_PASSWORD=${BIGIP_PASSWORD}"'
                 }
             }
         }
