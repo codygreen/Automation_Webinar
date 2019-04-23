@@ -39,8 +39,8 @@ pipeline {
                 dir("Automation_Webinar/code/3 - CICD") {
                     sh 'export BIGIP=`terraform output --module=big-ip private_ip`'
                     sh 'export BIGIP_PASSWORD=`terraform output --module=big-ip password`'
-                    echo BIGIP
-                    echo BIGIP_PASSWORD
+                    // echo BIGIP
+                    // echo BIGIP_PASSWORD
                     // sh 'ANSIBLE_HOST_KEY_CHECKING=false eansible-playbook -i ./inventory ./config-bigip.yaml --extra-vars "BIGIP=${BIGIP} BIGIP_PASSWORD=${BIGIP_PASSWORD}"'
                 }
             }
