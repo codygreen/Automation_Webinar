@@ -28,17 +28,17 @@ pipeline {
                 echo NAME               
                 echo GIT_REPO_URL
                 //TODO check out repo on remote box and configure NGINX
-                dir("Automation_Webinar/code/3*") {
+                dir("Automation_Webinar/code/3 - CICD") {
                     sh 'ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ./inventory ./demo-app.yaml --extra-vars "NAME=${NAME} GIT_REPO_URL=${GIT_REPO_URL}"'
                 }
             }
         }
-        stage('Configure BIG-IP') {
-            steps {
-                dir("Automation_Webinar/code/3*") {
-                    sh 'ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ./inventory ./config-bigip.yaml --extra-vars "NAME=${NAME} GIT_REPO_URL=${GIT_REPO_URL} BIGIP=${}" BIGIP_PASSWORD=${}'
-                }
-            }
-        }
+        // stage('Configure BIG-IP') {
+        //     steps {
+        //         dir("Automation_Webinar/code/3*") {
+        //             sh 'ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ./inventory ./config-bigip.yaml --extra-vars "NAME=${NAME} GIT_REPO_URL=${GIT_REPO_URL} BIGIP=${}" BIGIP_PASSWORD=${}'
+        //         }
+        //     }
+        // }
     }
 }
