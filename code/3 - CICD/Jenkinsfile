@@ -12,7 +12,7 @@ pipeline {
                 sh 'git clone https://github.com/codygreen/Automation_Webinar.git'
             }
         }
-        stage('Build Web App') { 
+        stage('Deploy Web App and BIG-IP') { 
             steps {
                 dir("Automation_Webinar/code/3 - CICD") {
                     sh 'export TF_VAR_name=${NAME}'
@@ -30,6 +30,13 @@ pipeline {
                 //TODO check out repo on remote box and configure NGINX
                 dir("Automation_Webinar/code/3*") {
                     sh 'ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ./inventory ./demo-app.yaml --extra-vars "NAME=${NAME} GIT_REPO_URL=${GIT_REPO_URL}"'
+                }
+            }
+        }
+        stage('Configure BIG-IP') {
+            steps {
+                dir("Automation_Webinar/code/3*") {
+                    sh 'ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ./inventory ./config-bigip.yaml --extra-vars "NAME=${NAME} GIT_REPO_URL=${GIT_REPO_URL} BIGIP=${}" BIGIP_PASSWORD=${}'
                 }
             }
         }

@@ -8,6 +8,11 @@ terraform {
   }
 }
 
+# Get My Public IP
+data "http" "myIP" {
+  url = "http://api.ipify.org/"
+}
+
 # Get VPC ID
 provider "aws" {
   region = "${var.aws_region}"
@@ -26,6 +31,7 @@ data "aws_subnet_ids" "cicd" {
   vpc_id = "${data.aws_vpc.cicd.id}"
 }
 
+# Deploy Demo App
 module "compute" {
   source = "github.com/codygreen/Terraform//modules/aws/compute-ec2"
 
@@ -35,4 +41,16 @@ module "compute" {
   ssh_key        = "${var.ssh_key}"
   subnet_id      = "${data.aws_subnet_ids.cicd.ids[0]}"
   instance_count = 1
+}
+
+# Deploy BIG-IP
+module "big-ip" {
+  source = "github.com/codygreen/Terraform//modules/aws/big-ip/single-nic"
+
+  name               = "${var.name}"
+  vpc_id             = "${data.aws_vpc.cicd.id}"
+  ssh_key            = "${var.ssh_key}"
+  subnet_id          = "${data.aws_subnet_ids.cicd.ids[0]}"
+  instance_count     = 1
+  allowed_mgmt_cidrs = "[${chomp(data.http.myIP.body)}/32]"
 }
