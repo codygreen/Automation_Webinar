@@ -49,8 +49,9 @@ module "big-ip" {
 
   name               = "${var.name}"
   vpc_id             = "${data.aws_vpc.cicd.id}"
-  ssh_key            = "${var.ssh_key}"
+  vpc_cidr           = "${var.vpc_cidr}"
+  key_name           = "${var.ssh_key}"
   subnet_id          = "${data.aws_subnet_ids.cicd.ids[0]}"
   instance_count     = 1
-  allowed_mgmt_cidrs = "[${chomp(data.http.myIP.body)}/32]"
+  allowed_mgmt_cidrs = ["${chomp(data.http.myIP.body)}/32"]
 }
