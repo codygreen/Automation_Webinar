@@ -10,7 +10,9 @@
         ssh_keyfile: "{{ SSH_KEYFILE }}"
         transport: cli
         user: "admin"
-      commands: modify auth user admin password BIGIP_PASSWORD
+      commands: 
+        - modify auth user admin password BIGIP_PASSWORD
+        - save sys config
   # Push AS3 declaration to BIG-IP
   - name: Push AS3 declaration to BIG-IP
     uri:
