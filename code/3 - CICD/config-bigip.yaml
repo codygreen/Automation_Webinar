@@ -11,8 +11,23 @@
         transport: cli
         user: "admin"
       commands: 
-        - modify auth user admin password BIGIP_PASSWORD
+        - modify auth user admin password {{ BIGIP_PASSWORD }}
         - save sys config
+  # Install AS3 
+  - name: Download foo.conf
+    get_url:
+      url: https://github.com/F5Networks/f5-appsvcs-extension/raw/master/dist/latest/f5-appsvcs-3.10.0-5.noarch.rpm
+      dest: ./as3.rpm
+  - name: Install AS3
+    bigip_iapplx_package:
+      package: "./as3.rpm"
+      provider:
+        server: "{{ BIGIP }}"
+        server_port: "8443"
+        transport: rest
+        user: "admin"
+        password: "{{ BIGIP_PASSWORD }}"
+        validate_certs: no
   # Push AS3 declaration to BIG-IP
   - name: Push AS3 declaration to BIG-IP
     uri:
