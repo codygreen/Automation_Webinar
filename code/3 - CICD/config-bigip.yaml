@@ -2,6 +2,15 @@
 - hosts: localhost
   gather_facts: False
   tasks:
+  # Change the BIG-IP admin password
+  - name: Change BIG-IP admin password
+    bigip_command:
+      provider:
+        server: "{{ BIGIP }}"
+        ssh_keyfile: "{{ SSH_KEYFILE }}"
+        transport: cli
+        user: "admin"
+      commands: modify auth user admin password BIGIP_PASSWORD
   # Push AS3 declaration to BIG-IP
   - name: Push AS3 declaration to BIG-IP
     uri:
