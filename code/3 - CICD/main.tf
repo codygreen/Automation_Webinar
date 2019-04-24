@@ -52,7 +52,7 @@ resource "aws_cloudformation_stack" "bigip" {
     imageName               = "Good25Mbps"
     instanceType            = "m5.large"
     sshKey                  = "${var.ssh_key}"
-    restrictedSrcAddress    = "${chomp(data.http.myIP.body)}/32, ${var.vpc_cidr}"
+    restrictedSrcAddress    = ["${chomp(data.http.myIP.body)}/32", "${var.vpc_cidr}"]
     restrictedSrcAddressApp = "0.0.0.0/0"
     declarationUrl          = "https://raw.githubusercontent.com/codygreen/Automation_Webinar/master/code/3%20-%20CICD/as3_nginx.json"
   }
