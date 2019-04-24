@@ -266,6 +266,7 @@ resource "null_resource" "jenkins" {
       "sudo service jenkins start",
       "sudo yum install -y git",
       "sudo pip install ansible",
+      "sudo pip install f5-sdk",
       "wget https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_amd64.zip",
       "unzip terraform*",
       "sudo mv terraform /usr/local/bin/",

@@ -13,6 +13,12 @@ data "http" "myIP" {
   url = "http://api.ipify.org/"
 }
 
+resource "random_string" "password" {
+  length           = 16
+  special          = true
+  override_special = "@"
+}
+
 # Get VPC ID
 provider "aws" {
   region = "${var.aws_region}"
