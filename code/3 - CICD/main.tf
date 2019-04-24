@@ -47,12 +47,15 @@ resource "aws_cloudformation_stack" "bigip" {
   name = "cicd-demo-bigip"
 
   parameters = {
-    Vpc                     = "${data.aws_vpc.cicd.id}"
-    subnet1Az1              = "${data.aws_subnet_ids.cicd.ids[0]}"
-    imageName               = "Good25Mbps"
-    instanceType            = "m5.large"
-    sshKey                  = "${var.ssh_key}"
-    restrictedSrcAddress    = ["${chomp(data.http.myIP.body)}/32", "${var.vpc_cidr}"]
+    Vpc          = "${data.aws_vpc.cicd.id}"
+    subnet1Az1   = "${data.aws_subnet_ids.cicd.ids[0]}"
+    imageName    = "Good25Mbps"
+    instanceType = "m5.large"
+    sshKey       = "${var.ssh_key}"
+
+    # restrictedSrcAddress    = ["${chomp(data.http.myIP.body)}/32", "${var.vpc_cidr}"]
+    restrictedSrcAddress = "${join(",", "${list("${chomp(data.http.myIP.body)}/32", "${var.vpc_cidr}")}")}"
+
     restrictedSrcAddressApp = "0.0.0.0/0"
     declarationUrl          = "https://raw.githubusercontent.com/codygreen/Automation_Webinar/master/code/3%20-%20CICD/as3_nginx.json"
   }
