@@ -36,7 +36,7 @@
       user: "admin"
       password: "{{ BIGIP_PASSWORD }}"
       body: "{{ lookup('file', 'as3_nginx.json') }}"
-      status_code: 202
+      status_code: 200
       timeout: 300
       body_format: json
       validate_certs: no
