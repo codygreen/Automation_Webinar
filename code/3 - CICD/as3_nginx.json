@@ -3,6 +3,7 @@
     "schemaVersion": "3.5.0",
     "label": "AWS Service Discovery",
     "remark": "Simple HTTP application with a pool using AWS service discovery",
+    "id": "Sample_sd_01",
     "Sample_sd_01": {
         "class": "Tenant",
         "verifiers": {
