@@ -16,7 +16,7 @@
   # Install AS3 
   - name: Download foo.conf
     get_url:
-      url: https://github.com/F5Networks/f5-appsvcs-extension/raw/master/dist/latest/f5-appsvcs-3.10.0-5.noarch.rpm
+      url: https://github.com/F5Networks/f5-appsvcs-extension/raw/master/dist/lts/f5-appsvcs-3.5.1-5.noarch.rpm
       dest: ./as3.rpm
   - name: Install AS3
     bigip_iapplx_package:
